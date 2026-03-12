@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orievo Safety Learn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4FC3DC;
+            --secondary: #2A9BB8;
+            --dark: #1a1a1a;
+            --accent: #6DD5ED;
+            --success: #06a77d;
+            --danger: #d32f2f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid var(--primary);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo img {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 6px 25px rgba(79,195,220,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(79,195,220,0.5);
+        }
+
+        /* Game Interface */
+        .game-interface {
+            display: none;
+        }
+
+        .game-interface.active {
+            display: block;
+        }
+
+        .game-header {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .user-progress {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .stat-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .world-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .world-header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 3px solid var(--primary);
+        }
+
+        .world-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .world-description {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .progress-percent {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .phase-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(79,195,220,0.2);
+        }
+
+        .phase-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+        }
+
+        .phase-card.completed {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(6,167,125,0.05), rgba(6,167,125,0.02));
+        }
+
+        .phase-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .phase-name {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .phase-type {
+            font-size: 13px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .phase-status {
+            margin-top: 15px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .status-locked {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .status-available {
+            background: var(--primary);
+            color: white;
+        }
+
+        .status-completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 45px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid var(--primary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 36px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        /* Video Player */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Quiz */
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(79,195,220,0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(6,167,125,0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--danger);
+            background: rgba(211,47,47,0.1);
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        /* Victory Screen */
+        .victory-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .victory-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .victory-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .stars-earned {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .star {
+            font-size: 60px;
+            animation: starPop 0.6s ease;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.3) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .phases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="logo_orievo_fundo_branco.png" alt="Orievo Group">
+            </div>
+            <h1 class="login-title">BEM-VINDO!</h1>
+            <p class="login-subtitle" id="worldNameDisplay">Carregando...</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">🔒 Senha do Treinamento</label>
+                    <input type="password" class="form-input" id="worldPassword" placeholder="Digite a senha fornecida" required>
+                    <small style="color: #6c757d; font-size: 13px; display: block; margin-top: 5px;">
+                        Entre em contato com o administrador para obter a senha.
+                    </small>
+                </div>
+                
+                <div id="userFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Seu Nome Completo</label>
+                        <input type="text" class="form-input" id="userName" placeholder="Digite seu nome">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Seu Email</label>
+                        <input type="email" class="form-input" id="userEmail" placeholder="seu@email.com">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submitBtn">Verificar Senha →</button>
+                <div id="errorMessage" style="color: #d32f2f; text-align: center; margin-top: 15px; display: none; font-weight: 600;">
+                    ❌ Senha incorreta! Verifique com o administrador.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Game Interface -->
+    <div id="gameInterface" class="game-interface">
+        <!-- Header -->
+        <div class="game-header">
+            <div class="user-info">
+                <div class="user-avatar">👷</div>
+                <div>
+                    <div class="user-name" id="displayUserName"></div>
+                    <div class="user-progress" id="displayUserEmail"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <span style="font-size: 22px;">⭐</span>
+                <span class="stat-value" id="userStars">0/10</span>
+            </div>
+        </div>
+
+        <!-- World Content -->
+        <div class="world-container">
+            <div class="world-header">
+                <div class="world-title" id="worldTitle"></div>
+                <div class="world-description" id="worldDescription"></div>
+                
+                <div class="progress-header">
+                    <span class="progress-label">Seu Progresso</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="phases-grid" id="phasesGrid">
+                <!-- Fases serão carregadas aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Fase -->
+    <div id="phaseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalBody"></div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="completePhase()">Concluir Fase</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentWorld = null;
+        let completedPhases = [];
+        let worldData = null;
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const worldId = urlParams.get('world');
+            
+            if (!worldId) {
+                alert('Link inválido! Entre em contato com o administrador.');
+                return;
+            }
+            
+            loadWorld(worldId);
+            checkExistingUser();
+        });
+
+        // CARREGAR MUNDO
+        function loadWorld(worldId) {
+            const worlds = JSON.parse(localStorage.getItem('orievo_worlds') || '[]');
+            worldData = worlds.find(w => w.id === worldId);
+            
+            if (!worldData) {
+                alert('Mundo não encontrado!');
+                return;
+            }
+            
+            if (!worldData.enabled) {
+                alert('Este treinamento está temporariamente desabilitado.');
+                return;
+            }
+            
+            document.getElementById('worldNameDisplay').textContent = worldData.name;
+            currentWorld = worldId;
+        }
+
+        // VERIFICAR USUÁRIO EXISTENTE
+        function checkExistingUser() {
+            const savedUser = localStorage.getItem('orievo_current_user_' + currentWorld);
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showGameInterface();
+            }
+        }
+
+        // LOGIN COM VERIFICAÇÃO DE SENHA
+        let passwordVerified = false;
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // PASSO 1: Verificar senha primeiro
+            if (!passwordVerified) {
+                const inputPassword = document.getElementById('worldPassword').value;
+                
+                if (inputPassword === worldData.password) {
+                    // Senha correta!
+                    passwordVerified = true;
+                    document.getElementById('worldPassword').disabled = true;
+                    document.getElementById('userFields').style.display = 'block';
+                    document.getElementById('userName').required = true;
+                    document.getElementById('userEmail').required = true;
+                    document.getElementById('submitBtn').textContent = 'Começar Treinamento →';
+                    document.getElementById('errorMessage').style.display = 'none';
+                } else {
+                    // Senha incorreta
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('worldPassword').value = '';
+                    document.getElementById('worldPassword').focus();
+                }
+                return;
+            }
+            
+            // PASSO 2: Criar usuário (só chega aqui se senha estiver correta)
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            
+            currentUser = {
+                id: 'user-' + Date.now(),
+                name: name,
+                email: email,
+                currentWorld: currentWorld,
+                progress: 0,
+                completedPhases: [],
+                lastActivity: new Date().toISOString(),
+                startedAt: new Date().toISOString()
+            };
+            
+            // Salvar usuário
+            localStorage.setItem('orievo_current_user_' + currentWorld, JSON.stringify(currentUser));
+            
+            // Adicionar à lista global de alunos
+            let students = JSON.parse(localStorage.getItem('orievo_students') || '[]');
+            students.push(currentUser);
+            localStorage.setItem('orievo_students', JSON.stringify(students));
+            
+            showGameInterface();
+        });
+
+        // MOSTRAR INTERFACE DO JOGO
+        function showGameInterface() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('gameInterface').classList.add('active');
+            
+            document.getElementById('displayUserName').textContent = currentUser.name;
+            document.getElementById('displayUserEmail').textContent = currentUser.email;
+            
+            loadWorldContent();
+            loadProgress();
+        }
+
+        // CARREGAR CONTEÚDO DO MUNDO
+        function loadWorldContent() {
+            document.getElementById('worldTitle').textContent = worldData.name;
+            document.getElementById('worldDescription').textContent = worldData.description;
+            
+            const phasesGrid = document.getElementById('phasesGrid');
+            phasesGrid.innerHTML = '';
+            
+            worldData.phases.forEach((phase, index) => {
+                if (!phase.enabled) return; // Pula fases desabilitadas
+                
+                const isCompleted = completedPhases.includes(phase.id);
+                const isLocked = index > 0 && !completedPhases.includes(worldData.phases[index - 1].id);
+                
+                const card = document.createElement('div');
+                card.className = 'phase-card' + (isLocked ? ' locked' : '') + (isCompleted ? ' completed' : '');
+                card.innerHTML = `
+                    <div class="phase-icon">${getPhaseIcon(phase.type)}</div>
+                    <div class="phase-name">${phase.name}</div>
+                    <div class="phase-type">${getPhaseTypeName(phase.type)}</div>
+                    <div class="phase-status ${isCompleted ? 'status-completed' : isLocked ? 'status-locked' : 'status-available'}">
+                        ${isCompleted ? '✓ Concluído' : isLocked ? '🔒 Bloqueado' : '▶ Iniciar'}
+                    </div>
+                `;
+                
+                if (!isLocked) {
+                    card.onclick = () => openPhase(phase);
+                }
+                
+                phasesGrid.appendChild(card);
+            });
+        }
+
+        // ÍCONES DAS FASES
+        function getPhaseIcon(type) {
+            const icons = {
+                video: '📹',
+                quiz: '❓',
+                game: '🎮'
+            };
+            return icons[type] || '📝';
+        }
+
+        function getPhaseTypeName(type) {
+            const names = {
+                video: 'Vídeo Aula',
+                quiz: 'Quiz',
+                game: 'Jogo Interativo'
+            };
+            return names[type] || 'Atividade';
+        }
+
+        // ABRIR FASE
+        function openPhase(phase) {
+            document.getElementById('modalTitle').textContent = phase.name;
+            
+            let content = '';
+            
+            if (phase.type === 'video') {
+                // Detecta o tipo de vídeo automaticamente
+                if (!phase.videoUrl || phase.videoUrl.trim() === '') {
+                    content = `
+                        <div style="text-align: center; padding: 40px;">
+                            <p style="color: #6c757d; font-size: 16px;">⚠️ Nenhum vídeo foi configurado para esta fase.</p>
+                        </div>
+                    `;
+                }
+                // YouTube ou Vimeo
+                else if (phase.videoUrl.includes('youtube.com') || phase.videoUrl.includes('youtu.be')) {
+                    const videoId = extractYouTubeId(phase.videoUrl);
+                    content = `
+                        <div class="video-container">
+                            <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
+                            Assista ao vídeo completo para concluir esta fase.
+                        </p>
+                    `;
+                }
+                else if (phase.videoUrl.includes('vimeo.com')) {
+                    const vimeoId = phase.videoUrl.split('/').pop();
+                    content = `
+                        <div class="video-container">
+                            <iframe src="https://player.vimeo.com/video/${vimeoId}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
+                            Assista ao vídeo completo para concluir esta fase.
+                        </p>
+                    `;
+                }
+                // Vídeo MP4 próprio (local ou URL)
+                else {
+                    content = `
+                        <div class="video-container">
+                            <video controls controlsList="nodownload" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;">
+                                <source src="${phase.videoUrl}" type="video/mp4">
+                                Seu navegador não suporta vídeos HTML5.
+                            </video>
+                        </div>
+                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
+                            Assista ao vídeo completo para concluir esta fase.
+                        </p>
+                    `;
+                }
+            } else if (phase.type === 'quiz') {
+                content = `
+                    <div class="question-card">
+                        <div class="question-text">Pergunta de exemplo:</div>
+                        <div class="option">
+                            <div class="option-letter">A</div>
+                            <div>Opção A</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-letter">B</div>
+                            <div>Opção B</div>
+                        </div>
+                    </div>
+                `;
+            } else if (phase.type === 'game') {
+                content = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2 style="font-size: 24px; margin-bottom: 20px;">🎮 Jogo Interativo</h2>
+                        <p style="color: #6c757d;">Complete o jogo para avançar!</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('phaseModal').classList.add('active');
+            window.currentPhaseId = phase.id;
+        }
+
+        // EXTRAIR ID DO YOUTUBE
+        function extractYouTubeId(url) {
+            if (!url) return '';
+            const match = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([\w-]{11})/);
+            return match ? match[1] : url;
+        }
+
+        // COMPLETAR FASE
+        function completePhase() {
+            if (!completedPhases.includes(window.currentPhaseId)) {
+                completedPhases.push(window.currentPhaseId);
+                saveProgress();
+                
+                showVictory();
+            }
+        }
+
+        // MOSTRAR VITÓRIA
+        function showVictory() {
+            document.getElementById('modalBody').innerHTML = `
+                <div class="victory-screen">
+                    <div class="victory-icon">🏆</div>
+                    <div class="victory-title">PARABÉNS!</div>
+                    <div class="stars-earned">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    <p style="font-size: 18px; color: #6c757d;">Você concluiu esta fase com sucesso!</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                closeModal();
+                loadWorldContent();
+                loadProgress();
+            }, 3000);
+        }
+
+        // SALVAR PROGRESSO
+        function saveProgress() {
+            currentUser.completedPhases = completedPhases;
+            currentUser.progress = Math.round((completedPhases.length / worldData.phases.filter(p => p.enabled).length) * 100);
+            currentUser.lastActivity = new Date().toISOString();
+            
+            localStorage.setItem('orievo_current_user_' + currentWorld, JSON.stringify(currentUser));
+            
+            // Atualizar na lista global
+            let students = JSON.parse(localStorage.getItem('orievo_students') || '[]');
+            const index = students.findIndex(s => s.id === currentUser.id);
+            if (index >= 0) {
+                students[index] = currentUser;
+            } else {
+                students.push(currentUser);
+            }
+            localStorage.setItem('orievo_students', JSON.stringify(students));
+        }
+
+        // CARREGAR PROGRESSO
+        function loadProgress() {
+            completedPhases = currentUser.completedPhases || [];
+            
+            const totalPhases = worldData.phases.filter(p => p.enabled).length;
+            const progress = completedPhases.length;
+            const percent = Math.round((progress / totalPhases) * 100);
+            
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('userStars').textContent = progress + '/' + totalPhases;
+        }
+
+        // FECHAR MODAL
+        function closeModal() {
+            document.getElementById('phaseModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

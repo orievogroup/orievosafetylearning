@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orievo Safety Learn - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4FC3DC;
+            --secondary: #2A9BB8;
+            --dark: #1a1a1a;
+            --accent: #6DD5ED;
+            --success: #06a77d;
+            --danger: #d32f2f;
+            --warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Header */
+        .admin-header {
+            background: white;
+            padding: 25px 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        /* Content Panels */
+        .panel {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .world-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .world-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(79,195,220,0.2);
+        }
+
+        .world-card.disabled {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+        }
+
+        .world-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .world-icon {
+            font-size: 48px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .world-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .world-description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .world-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .stat strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        /* Link Box */
+        .link-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed var(--primary);
+        }
+
+        .link-display {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .badge-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s ease;
+        }
+
+        /* Phase List */
+        .phase-list {
+            margin-top: 20px;
+        }
+
+        .phase-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phase-info {
+            flex: 1;
+        }
+
+        .phase-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .phase-type {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="logo">
+                <div class="logo-text">🛡️ ORIEVO SAFETY LEARN</div>
+            </div>
+            <div class="admin-badge">PAINEL ADMINISTRATIVO</div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('worlds')">📚 Mundos</button>
+            <button class="nav-tab" onclick="switchTab('students')">👥 Alunos</button>
+            <button class="nav-tab" onclick="switchTab('reports')">📊 Relatórios</button>
+            <button class="nav-tab" onclick="switchTab('config')">⚙️ Configurações</button>
+        </div>
+
+        <!-- Panel: Mundos -->
+        <div id="panel-worlds" class="panel active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1 class="panel-title">Gerenciar Mundos</h1>
+                <button class="btn btn-primary" onclick="openModal('createWorld')">+ Criar Novo Mundo</button>
+            </div>
+
+            <div class="cards-grid" id="worldsGrid">
+                <!-- Mundos serão carregados aqui -->
+            </div>
+        </div>
+
+        <!-- Panel: Alunos -->
+        <div id="panel-students" class="panel">
+            <h1 class="panel-title">Alunos Cadastrados</h1>
+            
+            <table class="data-table" id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Mundo Atual</th>
+                        <th>Progresso</th>
+                        <th>Última Atividade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Alunos serão carregados aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Panel: Relatórios -->
+        <div id="panel-reports" class="panel">
+            <h1 class="panel-title">Relatórios e Métricas</h1>
+            
+            <div class="cards-grid">
+                <div class="world-card">
+                    <div class="world-icon">👥</div>
+                    <div class="world-title" id="totalStudents">0</div>
+                    <div class="world-description">Total de Alunos</div>
+                </div>
+                
+                <div class="world-card">
+                    <div class="world-icon">✅</div>
+                    <div class="world-title" id="completedWorlds">0</div>
+                    <div class="world-description">Mundos Concluídos</div>
+                </div>
+                
+                <div class="world-card">
+                    <div class="world-icon">📊</div>
+                    <div class="world-title" id="avgProgress">0%</div>
+                    <div class="world-description">Progresso Médio</div>
+                </div>
+            </div>
+
+            <h2 style="margin: 40px 0 20px;">Exportar Dados</h2>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="exportCSV()">📥 Exportar CSV</button>
+                <button class="btn btn-primary" onclick="exportJSON()">📥 Exportar JSON</button>
+            </div>
+        </div>
+
+        <!-- Panel: Configurações -->
+        <div id="panel-config" class="panel">
+            <h1 class="panel-title">Configurações do Sistema</h1>
+            
+            <div class="form-group">
+                <label class="form-label">Nome da Plataforma</label>
+                <input type="text" class="form-input" id="platformName" value="Orievo Safety Learn">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Administrativo</label>
+                <input type="email" class="form-input" id="adminEmail" value="admin@orievo.com">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveConfig()">Salvar Configurações</button>
+        </div>
+    </div>
+
+    <!-- Modal: Criar Mundo -->
+    <div id="modal-createWorld" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Criar Novo Mundo</h2>
+                <button class="modal-close" onclick="closeModal('createWorld')">×</button>
+            </div>
+
+            <form id="worldForm">
+                <div class="form-group">
+                    <label class="form-label">Nome do Mundo</label>
+                    <input type="text" class="form-input" id="worldName" placeholder="Ex: Líder de Excelência" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-input" id="worldDescription" placeholder="Descrição do mundo..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ícone (Emoji)</label>
+                    <input type="text" class="form-input" id="worldIcon" placeholder="🎯" maxlength="2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Cor do Mundo (Hex)</label>
+                    <input type="color" class="form-input" id="worldColor" value="#4FC3DC">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔒 Senha de Acesso do Mundo</label>
+                    <input type="text" class="form-input" id="worldPassword" placeholder="Ex: Cliente123!" required>
+                    <small style="color: #6c757d; font-size: 13px; display: block; margin-top: 5px;">
+                        Esta senha será necessária para acessar este mundo. Cada mundo pode ter uma senha diferente.
+                    </small>
+                </div>
+
+                <h3 style="margin: 30px 0 15px;">Fases do Mundo</h3>
+                <div id="phasesContainer">
+                    <!-- Fases serão adicionadas aqui -->
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="addPhase()">+ Adicionar Fase</button>
+
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button type="button" class="btn btn-success" onclick="saveWorld()">Salvar Mundo</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('createWorld')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Editar Mundo -->
+    <div id="modal-editWorld" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar Mundo</h2>
+                <button class="modal-close" onclick="closeModal('editWorld')">×</button>
+            </div>
+
+            <div id="editWorldContent">
+                <!-- Conteúdo de edição -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Link Compartilhável -->
+    <div id="modal-shareLink" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Link Compartilhável</h2>
+                <button class="modal-close" onclick="closeModal('shareLink')">×</button>
+            </div>
+
+            <p style="margin-bottom: 20px;">Compartilhe este link com seus alunos para acessarem o mundo:</p>
+
+            <div class="link-box">
+                <div class="link-display" id="shareLinkDisplay"></div>
+                <button class="btn btn-primary" onclick="copyLink()">📋 Copiar Link</button>
+            </div>
+
+            <p style="margin-top: 20px; color: #6c757d; font-size: 14px;">
+                ⚠️ Os alunos precisarão fazer login com nome e email ao acessar pela primeira vez.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // SISTEMA DE DADOS
+        let worlds = [];
+        let students = [];
+        let phaseCounter = 0;
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            renderWorlds();
+            renderStudents();
+            updateStats();
+            
+            // Criar mundos de exemplo se não existir nenhum
+            if (worlds.length === 0) {
+                createExampleWorlds();
+            }
+        });
+
+        // CRIAR MUNDOS DE EXEMPLO
+        function createExampleWorlds() {
+            worlds = [
+                {
+                    id: 'world-1',
+                    name: 'Líder de Excelência',
+                    description: 'Desenvolva habilidades de liderança e gestão de equipes',
+                    icon: '👔',
+                    color: '#4FC3DC',
+                    password: 'Lider2026!',
+                    enabled: true,
+                    phases: [
+                        {
+                            id: 'phase-1-1',
+                            name: 'Fase 1: O que é Liderança?',
+                            type: 'video',
+                            videoUrl: '',
+                            enabled: true
+                        },
+                        {
+                            id: 'phase-1-2',
+                            name: 'Fase 2: Quiz de Fundamentos',
+                            type: 'quiz',
+                            questions: [],
+                            enabled: true
+                        },
+                        {
+                            id: 'phase-1-3',
+                            name: 'Fase 3: Jogo da Memória',
+                            type: 'game',
+                            gameType: 'memory',
+                            enabled: true
+                        }
+                    ]
+                },
+                {
+                    id: 'world-2',
+                    name: 'Liderando a Segurança de Processos',
+                    description: 'Gestão de segurança operacional e processos industriais',
+                    icon: '🛡️',
+                    color: '#f39c12',
+                    password: 'Seguranca2026!',
+                    enabled: true,
+                    phases: [
+                        {
+                            id: 'phase-2-1',
+                            name: 'Fase 1: Introdução à Segurança',
+                            type: 'video',
+                            videoUrl: '',
+                            enabled: true
+                        },
+                        {
+                            id: 'phase-2-2',
+                            name: 'Fase 2: Drift Operacional',
+                            type: 'video',
+                            videoUrl: '',
+                            enabled: true
+                        },
+                        {
+                            id: 'phase-2-3',
+                            name: 'Fase 3: Quiz Avançado',
+                            type: 'quiz',
+                            questions: [],
+                            enabled: true
+                        },
+                        {
+                            id: 'phase-2-4',
+                            name: 'Fase 4: Caça-Palavras',
+                            type: 'game',
+                            gameType: 'wordsearch',
+                            enabled: true
+                        }
+                    ]
+                }
+            ];
+            
+            saveData();
+            renderWorlds();
+        }
+
+        // GERENCIAR ABAS
+        function switchTab(tab) {
+            // Atualizar botões
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Atualizar painéis
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        // RENDERIZAR MUNDOS
+        function renderWorlds() {
+            const grid = document.getElementById('worldsGrid');
+            grid.innerHTML = '';
+            
+            worlds.forEach(world => {
+                const card = document.createElement('div');
+                card.className = 'world-card' + (world.enabled ? '' : ' disabled');
+                card.innerHTML = `
+                    <div class="world-card-header">
+                        <div class="world-icon">${world.icon}</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${world.enabled ? 'checked' : ''} onchange="toggleWorld('${world.id}')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="world-title">${world.name}</div>
+                    <div class="world-description">${world.description}</div>
+                    <div class="world-stats">
+                        <div class="stat"><strong>${world.phases.length}</strong> fases</div>
+                        <div class="stat"><strong>${world.phases.filter(p => p.enabled).length}</strong> ativas</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 15px 0; border-left: 3px solid var(--primary);">
+                        <div style="font-size: 11px; color: #6c757d; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">🔒 Senha de Acesso</div>
+                        <div style="font-family: monospace; font-size: 16px; font-weight: 700; color: var(--primary);">${world.password}</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="shareWorld('${world.id}')">🔗 Link</button>
+                        <button class="btn btn-secondary" onclick="editWorld('${world.id}')">✏️ Editar</button>
+                        <button class="btn btn-danger" onclick="deleteWorld('${world.id}')">🗑️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ADICIONAR FASE
+        function addPhase() {
+            phaseCounter++;
+            const container = document.getElementById('phasesContainer');
+            const phaseDiv = document.createElement('div');
+            phaseDiv.className = 'phase-item';
+            phaseDiv.id = 'phase-' + phaseCounter;
+            phaseDiv.innerHTML = `
+                <div class="phase-info">
+                    <input type="text" class="form-input" placeholder="Nome da Fase" style="margin-bottom: 10px;">
+                    <select class="form-input" style="margin-bottom: 10px;">
+                        <option value="video">📹 Vídeo</option>
+                        <option value="quiz">❓ Quiz</option>
+                        <option value="game">🎮 Jogo</option>
+                    </select>
+                    <input type="text" class="form-input" placeholder="URL do vídeo do YouTube (se aplicável)">
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removePhase(${phaseCounter})">×</button>
+            `;
+            container.appendChild(phaseDiv);
+        }
+
+        // REMOVER FASE
+        function removePhase(id) {
+            document.getElementById('phase-' + id).remove();
+        }
+
+        // SALVAR MUNDO
+        function saveWorld() {
+            const name = document.getElementById('worldName').value;
+            const description = document.getElementById('worldDescription').value;
+            const icon = document.getElementById('worldIcon').value;
+            const color = document.getElementById('worldColor').value;
+            const password = document.getElementById('worldPassword').value;
+            
+            if (!name) {
+                alert('Por favor, preencha o nome do mundo!');
+                return;
+            }
+            
+            if (!password) {
+                alert('Por favor, defina uma senha para o mundo!');
+                return;
+            }
+            
+            const phases = [];
+            document.querySelectorAll('#phasesContainer .phase-item').forEach(phaseDiv => {
+                const inputs = phaseDiv.querySelectorAll('input, select');
+                phases.push({
+                    id: 'phase-' + Date.now() + '-' + Math.random(),
+                    name: inputs[0].value,
+                    type: inputs[1].value,
+                    videoUrl: inputs[2] ? inputs[2].value : '',
+                    enabled: true,
+                    questions: [],
+                    gameType: inputs[1].value === 'game' ? 'memory' : null
+                });
+            });
+            
+            const newWorld = {
+                id: 'world-' + Date.now(),
+                name: name,
+                description: description,
+                icon: icon || '🎯',
+                color: color,
+                password: password,
+                enabled: true,
+                phases: phases
+            };
+            
+            worlds.push(newWorld);
+            saveData();
+            renderWorlds();
+            closeModal('createWorld');
+            
+            // Limpar formulário
+            document.getElementById('worldForm').reset();
+            document.getElementById('phasesContainer').innerHTML = '';
+            phaseCounter = 0;
+            
+            alert('✅ Mundo criado com sucesso!');
+        }
+
+        // COMPARTILHAR MUNDO
+        function shareWorld(worldId) {
+            const world = worlds.find(w => w.id === worldId);
+            if (!world) return;
+            
+            // Gerar link único
+            const baseUrl = window.location.origin + window.location.pathname;
+            const link = baseUrl.replace('admin.html', 'player.html') + '?world=' + worldId;
+            
+            document.getElementById('shareLinkDisplay').textContent = link;
+            openModal('shareLink');
+        }
+
+        // COPIAR LINK
+        function copyLink() {
+            const link = document.getElementById('shareLinkDisplay').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('✅ Link copiado para a área de transferência!');
+            });
+        }
+
+        // TOGGLE MUNDO
+        function toggleWorld(worldId) {
+            const world = worlds.find(w => w.id === worldId);
+            if (world) {
+                world.enabled = !world.enabled;
+                saveData();
+                renderWorlds();
+            }
+        }
+
+        // DELETAR MUNDO
+        function deleteWorld(worldId) {
+            if (confirm('Tem certeza que deseja deletar este mundo? Esta ação não pode ser desfeita.')) {
+                worlds = worlds.filter(w => w.id !== worldId);
+                saveData();
+                renderWorlds();
+            }
+        }
+
+        // EDITAR MUNDO
+        function editWorld(worldId) {
+            const world = worlds.find(w => w.id === worldId);
+            if (!world) return;
+            
+            document.getElementById('editWorldContent').innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Nome do Mundo</label>
+                    <input type="text" class="form-input" value="${world.name}" id="editWorldName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-input" id="editWorldDesc">${world.description}</textarea>
+                </div>
+                
+                <h3 style="margin: 30px 0 15px;">Gerenciar Fases</h3>
+                <div class="phase-list" id="editPhasesList">
+                    ${world.phases.map((phase, index) => `
+                        <div class="phase-item">
+                            <div class="phase-info">
+                                <div class="phase-name">${phase.name}</div>
+                                <div class="phase-type">Tipo: ${phase.type}</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${phase.enabled ? 'checked' : ''} onchange="togglePhase('${worldId}', ${index})">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button class="btn btn-success" onclick="saveWorldEdit('${worldId}')">Salvar Alterações</button>
+                    <button class="btn btn-secondary" onclick="closeModal('editWorld')">Cancelar</button>
+                </div>
+            `;
+            
+            openModal('editWorld');
+        }
+
+        // TOGGLE FASE
+        function togglePhase(worldId, phaseIndex) {
+            const world = worlds.find(w => w.id === worldId);
+            if (world && world.phases[phaseIndex]) {
+                world.phases[phaseIndex].enabled = !world.phases[phaseIndex].enabled;
+                saveData();
+            }
+        }
+
+        // SALVAR EDIÇÃO DO MUNDO
+        function saveWorldEdit(worldId) {
+            const world = worlds.find(w => w.id === worldId);
+            if (world) {
+                world.name = document.getElementById('editWorldName').value;
+                world.description = document.getElementById('editWorldDesc').value;
+                saveData();
+                renderWorlds();
+                closeModal('editWorld');
+                alert('✅ Mundo atualizado com sucesso!');
+            }
+        }
+
+        // RENDERIZAR ALUNOS
+        function renderStudents() {
+            const tbody = document.querySelector('#studentsTable tbody');
+            tbody.innerHTML = '';
+            
+            students.forEach(student => {
+                const world = worlds.find(w => w.id === student.currentWorld);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.email}</td>
+                    <td>${world ? world.name : 'N/A'}</td>
+                    <td>
+                        <span class="badge ${student.progress >= 100 ? 'badge-success' : student.progress >= 50 ? 'badge-warning' : 'badge-danger'}">
+                            ${student.progress}%
+                        </span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${student.progress}%"></div>
+                        </div>
+                    </td>
+                    <td>${new Date(student.lastActivity).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewStudentDetail('${student.id}')">Ver Detalhes</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ATUALIZAR ESTATÍSTICAS
+        function updateStats() {
+            document.getElementById('totalStudents').textContent = students.length;
+            
+            const completed = students.filter(s => s.progress >= 100).length;
+            document.getElementById('completedWorlds').textContent = completed;
+            
+            const avgProgress = students.length > 0 
+                ? Math.round(students.reduce((sum, s) => sum + s.progress, 0) / students.length)
+                : 0;
+            document.getElementById('avgProgress').textContent = avgProgress + '%';
+        }
+
+        // EXPORTAR CSV
+        function exportCSV() {
+            let csv = 'Nome,Email,Mundo,Progresso,Última Atividade\n';
+            students.forEach(student => {
+                const world = worlds.find(w => w.id === student.currentWorld);
+                csv += `${student.name},${student.email},${world ? world.name : 'N/A'},${student.progress}%,${new Date(student.lastActivity).toLocaleDateString()}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'alunos-orievo-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+
+        // EXPORTAR JSON
+        function exportJSON() {
+            const data = {
+                worlds: worlds,
+                students: students,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backup-orievo-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+        }
+
+        // SALVAR CONFIGURAÇÕES
+        function saveConfig() {
+            const config = {
+                platformName: document.getElementById('platformName').value,
+                adminEmail: document.getElementById('adminEmail').value
+            };
+            localStorage.setItem('orievo_config', JSON.stringify(config));
+            alert('✅ Configurações salvas com sucesso!');
+        }
+
+        // MODAL
+        function openModal(modalId) {
+            document.getElementById('modal-' + modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById('modal-' + modalId).classList.remove('active');
+        }
+
+        // PERSISTÊNCIA DE DADOS
+        function saveData() {
+            localStorage.setItem('orievo_worlds', JSON.stringify(worlds));
+            localStorage.setItem('orievo_students', JSON.stringify(students));
+        }
+
+        function loadData() {
+            const savedWorlds = localStorage.getItem('orievo_worlds');
+            const savedStudents = localStorage.getItem('orievo_students');
+            
+            if (savedWorlds) worlds = JSON.parse(savedWorlds);
+            if (savedStudents) students = JSON.parse(savedStudents);
+        }
+    </script>
+</body>
+</html>
