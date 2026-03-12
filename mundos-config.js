@@ -59,3 +59,9 @@ const MUNDOS_CONFIG = {
         cacaPalavras: {palavras: ['LIDERANCA', 'EMPATIA', 'GESTAO', 'MOTIVACAO', 'VISAO', 'COMUNICACAO', 'FEEDBACK', 'COACHING']}
     }
 };
+
+// Exportar para uso no HTML
+if (typeof window !== 'undefined') {
+    window.MUNDOS_CONFIG = MUNDOS_CONFIG;
+}
+
