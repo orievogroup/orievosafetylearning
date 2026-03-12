@@ -739,19 +739,110 @@
                     </p>
                 `;
             } else if (phase.type === 'quiz') {
-                content = `
-                    <div class="question-card">
-                        <div class="question-text">Pergunta de exemplo:</div>
-                        <div class="option">
-                            <div class="option-letter">A</div>
-                            <div>Opção A</div>
+                // Carregar quiz do mundos-config.js
+                let quizHTML = '';
+                
+                if (typeof MUNDOS_CONFIG !== 'undefined' && MUNDOS_CONFIG[worldId]) {
+                    const worldConfig = MUNDOS_CONFIG[worldId];
+                    const quizData = worldConfig.quiz || [];
+                    
+                    quizData.forEach((q, idx) => {
+                        quizHTML += `
+                            <div class="question-card" style="background: white; padding: 30px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                <div style="color: var(--primary); font-weight: 800; font-size: 14px; margin-bottom: 10px;">PERGUNTA ${idx + 1}/${quizData.length}</div>
+                                <div class="question-text" style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">${q.pergunta}</div>
+                                <div class="options-container">
+                                    ${q.opcoes.map((opcao, optIdx) => `
+                                        <div class="option quiz-option" data-correct="${optIdx === q.correta}" style="display: flex; align-items: center; padding: 15px; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s;">
+                                            <div class="option-letter" style="width: 35px; height: 35px; background: white; color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin-right: 15px;">${['A', 'B', 'C', 'D'][optIdx]}</div>
+                                            <div>${opcao}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    content = `
+                        <div style="max-width: 700px; margin: 0 auto;">
+                            ${quizHTML}
+                            <button onclick="checkQuiz()" style="width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 20px;">
+                                ✅ Enviar Respostas
+                            </button>
                         </div>
-                        <div class="option">
-                            <div class="option-letter">B</div>
-                            <div>Opção B</div>
+                        <script>
+                            document.querySelectorAll('.quiz-option').forEach(opt => {
+                                opt.onclick = function() {
+                                    this.closest('.question-card').querySelectorAll('.quiz-option').forEach(o => o.style.background = '#f8f9fa');
+                                    this.style.background = 'var(--primary)';
+                                    this.style.color = 'white';
+                                };
+                            });
+                        </script>
+                    `;
+                } else {
+                    content = `<div style="text-align: center; padding: 40px;"><p>Quiz não configurado</p></div>`;
+                }
+            } else if (phase.type === 'memoria') {
+                // Jogo da memória do config
+                let memoriaHTML = '';
+                
+                if (typeof MUNDOS_CONFIG !== 'undefined' && MUNDOS_CONFIG[worldId]) {
+                    const worldConfig = MUNDOS_CONFIG[worldId];
+                    const pares = worldConfig.memoria?.pares || ['❓', '❓', '❓', '❓'];
+                    const cards = [...pares, ...pares].sort(() => Math.random() - 0.5);
+                    
+                    content = `
+                        <div style="max-width: 600px; margin: 30px auto; padding: 20px;">
+                            <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">🃏 Jogo da Memória</h3>
+                            <div id="memoryGame" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                                ${cards.map((symbol, idx) => `
+                                    <div class="memory-card" data-symbol="${symbol}" data-idx="${idx}" onclick="flipCard(this)" style="aspect-ratio: 1; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer; user-select: none; transition: transform 0.3s;">
+                                        <div class="card-front">?</div>
+                                        <div class="card-back" style="display: none;">${symbol}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <p id="memoryStatus" style="text-align: center; margin-top: 20px; font-weight: 700; color: var(--primary);">Pares: 0/${pares.length}</p>
                         </div>
-                    </div>
-                `;
+                        <script>
+                            let flipped = [];
+                            let matched = 0;
+                            function flipCard(card) {
+                                if (flipped.length === 2 || card.classList.contains('matched') || card.classList.contains('flipped')) return;
+                                card.classList.add('flipped');
+                                card.querySelector('.card-front').style.display = 'none';
+                                card.querySelector('.card-back').style.display = 'block';
+                                card.style.background = 'white';
+                                card.style.border = '3px solid var(--primary)';
+                                flipped.push(card);
+                                if (flipped.length === 2) {
+                                    setTimeout(() => {
+                                        if (flipped[0].dataset.symbol === flipped[1].dataset.symbol) {
+                                            flipped.forEach(c => c.classList.add('matched'));
+                                            matched++;
+                                            document.getElementById('memoryStatus').textContent = 'Pares: ' + matched + '/${pares.length}';
+                                            if (matched === ${pares.length}) {
+                                                setTimeout(() => { alert('🎉 Parabéns! Você completou!'); completePhase(); }, 500);
+                                            }
+                                        } else {
+                                            flipped.forEach(c => {
+                                                c.classList.remove('flipped');
+                                                c.querySelector('.card-front').style.display = 'block';
+                                                c.querySelector('.card-back').style.display = 'none';
+                                                c.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
+                                                c.style.border = 'none';
+                                            });
+                                        }
+                                        flipped = [];
+                                    }, 800);
+                                }
+                            }
+                        </script>
+                    `;
+                } else {
+                    content = `<div style="text-align: center; padding: 40px;"><p>Jogo não configurado</p></div>`;
+                }
             } else if (phase.type === 'game') {
                 content = `
                     <div style="text-align: center; padding: 40px;">
@@ -771,6 +862,34 @@
             if (!url) return '';
             const match = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([\w-]{11})/);
             return match ? match[1] : url;
+        }
+
+        // CHECK QUIZ
+        function checkQuiz() {
+            let correct = 0;
+            let total = document.querySelectorAll('.question-card').length;
+            
+            document.querySelectorAll('.question-card').forEach(card => {
+                const selected = card.querySelector('.quiz-option[style*="var(--primary)"]');
+                const correctOpt = card.querySelector('.quiz-option[data-correct="true"]');
+                
+                if (selected && selected.dataset.correct === 'true') {
+                    correct++;
+                    selected.style.background = 'var(--success)';
+                } else if (selected) {
+                    selected.style.background = 'var(--danger)';
+                    if (correctOpt) correctOpt.style.background = 'var(--success)';
+                }
+            });
+            
+            setTimeout(() => {
+                if (correct >= total * 0.7) {
+                    alert(`🎉 Parabéns! Você acertou ${correct} de ${total}!`);
+                    completePhase();
+                } else {
+                    alert(`Você acertou ${correct} de ${total}. Necessário 70% para passar. Tente novamente!`);
+                }
+            }, 1000);
         }
 
         // COMPLETAR FASE
@@ -840,6 +959,53 @@
         // FECHAR MODAL
         function closeModal() {
             document.getElementById('phaseModal').classList.remove('active');
+        }
+    </script>
+    
+    <!-- IMPORTAR CONFIGURAÇÃO DE MUNDOS -->
+    <script src="mundos-config.js"></script>
+    
+    <script>
+        // INTEGRAÇÃO COM MUNDOS-CONFIG.JS
+        // Sobrescrever dados de mundos com config externo se disponível
+        if (typeof MUNDOS_CONFIG !== 'undefined') {
+            console.log('✅ Carregando mundos do mundos-config.js');
+            
+            // Converter config para formato do sistema
+            Object.keys(MUNDOS_CONFIG).forEach(worldId => {
+                const configWorld = MUNDOS_CONFIG[worldId];
+                
+                // Verificar se mundo existe no localStorage
+                let worlds = JSON.parse(localStorage.getItem('orievo_worlds') || '[]');
+                let existingWorld = worlds.find(w => w.id === worldId);
+                
+                if (!existingWorld) {
+                    // Criar mundo baseado no config
+                    const newWorld = {
+                        id: worldId,
+                        name: configWorld.nome,
+                        description: configWorld.descricao,
+                        icon: configWorld.icone,
+                        color: configWorld.cor,
+                        password: configWorld.senha,
+                        enabled: configWorld.ativo,
+                        phases: (configWorld.fases || []).map((fase, idx) => ({
+                            id: 'phase-' + idx,
+                            name: fase.nome,
+                            type: fase.tipo,
+                            content: fase.url || '',
+                            enabled: fase.ativo !== false
+                        })),
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    worlds.push(newWorld);
+                    localStorage.setItem('orievo_worlds', JSON.stringify(worlds));
+                    console.log('✅ Mundo criado:', configWorld.nome);
+                }
+            });
+        } else {
+            console.warn('⚠️ mundos-config.js não encontrado, usando localStorage apenas');
         }
     </script>
 </body>
