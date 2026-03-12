@@ -52,12 +52,13 @@
         }
 
         .login-logo img {
-            height: 60px;
+            height: 80px;
             margin-bottom: 20px;
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border: 2px solid #e9ecef;
         }
 
         .login-title {
@@ -514,29 +515,16 @@
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">🔒 Senha do Treinamento</label>
-                    <input type="password" class="form-input" id="worldPassword" placeholder="Digite a senha fornecida" required>
-                    <small style="color: #6c757d; font-size: 13px; display: block; margin-top: 5px;">
-                        Entre em contato com o administrador para obter a senha.
-                    </small>
+                    <label class="form-label">Seu Nome Completo</label>
+                    <input type="text" class="form-input" id="userName" placeholder="Digite seu nome" required>
                 </div>
                 
-                <div id="userFields" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label">Seu Nome Completo</label>
-                        <input type="text" class="form-input" id="userName" placeholder="Digite seu nome">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Seu Email</label>
-                        <input type="email" class="form-input" id="userEmail" placeholder="seu@email.com">
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">Seu Email</label>
+                    <input type="email" class="form-input" id="userEmail" placeholder="seu@email.com" required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" id="submitBtn">Verificar Senha →</button>
-                <div id="errorMessage" style="color: #d32f2f; text-align: center; margin-top: 15px; display: none; font-weight: 600;">
-                    ❌ Senha incorreta! Verifique com o administrador.
-                </div>
+                <button type="submit" class="btn btn-primary">Começar Treinamento →</button>
             </form>
         </div>
     </div>
@@ -641,35 +629,10 @@
             }
         }
 
-        // LOGIN COM VERIFICAÇÃO DE SENHA
-        let passwordVerified = false;
-        
+        // LOGIN
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // PASSO 1: Verificar senha primeiro
-            if (!passwordVerified) {
-                const inputPassword = document.getElementById('worldPassword').value;
-                
-                if (inputPassword === worldData.password) {
-                    // Senha correta!
-                    passwordVerified = true;
-                    document.getElementById('worldPassword').disabled = true;
-                    document.getElementById('userFields').style.display = 'block';
-                    document.getElementById('userName').required = true;
-                    document.getElementById('userEmail').required = true;
-                    document.getElementById('submitBtn').textContent = 'Começar Treinamento →';
-                    document.getElementById('errorMessage').style.display = 'none';
-                } else {
-                    // Senha incorreta
-                    document.getElementById('errorMessage').style.display = 'block';
-                    document.getElementById('worldPassword').value = '';
-                    document.getElementById('worldPassword').focus();
-                }
-                return;
-            }
-            
-            // PASSO 2: Criar usuário (só chega aqui se senha estiver correta)
             const name = document.getElementById('userName').value;
             const email = document.getElementById('userEmail').value;
             
@@ -766,51 +729,15 @@
             let content = '';
             
             if (phase.type === 'video') {
-                // Detecta o tipo de vídeo automaticamente
-                if (!phase.videoUrl || phase.videoUrl.trim() === '') {
-                    content = `
-                        <div style="text-align: center; padding: 40px;">
-                            <p style="color: #6c757d; font-size: 16px;">⚠️ Nenhum vídeo foi configurado para esta fase.</p>
-                        </div>
-                    `;
-                }
-                // YouTube ou Vimeo
-                else if (phase.videoUrl.includes('youtube.com') || phase.videoUrl.includes('youtu.be')) {
-                    const videoId = extractYouTubeId(phase.videoUrl);
-                    content = `
-                        <div class="video-container">
-                            <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
-                            Assista ao vídeo completo para concluir esta fase.
-                        </p>
-                    `;
-                }
-                else if (phase.videoUrl.includes('vimeo.com')) {
-                    const vimeoId = phase.videoUrl.split('/').pop();
-                    content = `
-                        <div class="video-container">
-                            <iframe src="https://player.vimeo.com/video/${vimeoId}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
-                            Assista ao vídeo completo para concluir esta fase.
-                        </p>
-                    `;
-                }
-                // Vídeo MP4 próprio (local ou URL)
-                else {
-                    content = `
-                        <div class="video-container">
-                            <video controls controlsList="nodownload" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;">
-                                <source src="${phase.videoUrl}" type="video/mp4">
-                                Seu navegador não suporta vídeos HTML5.
-                            </video>
-                        </div>
-                        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
-                            Assista ao vídeo completo para concluir esta fase.
-                        </p>
-                    `;
-                }
+                const videoId = extractYouTubeId(phase.videoUrl);
+                content = `
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <p style="text-align: center; color: #6c757d; margin-top: 20px;">
+                        Assista ao vídeo completo para concluir esta fase.
+                    </p>
+                `;
             } else if (phase.type === 'quiz') {
                 content = `
                     <div class="question-card">

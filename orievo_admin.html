@@ -597,14 +597,6 @@
                     <input type="color" class="form-input" id="worldColor" value="#4FC3DC">
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">🔒 Senha de Acesso do Mundo</label>
-                    <input type="text" class="form-input" id="worldPassword" placeholder="Ex: Cliente123!" required>
-                    <small style="color: #6c757d; font-size: 13px; display: block; margin-top: 5px;">
-                        Esta senha será necessária para acessar este mundo. Cada mundo pode ter uma senha diferente.
-                    </small>
-                </div>
-
                 <h3 style="margin: 30px 0 15px;">Fases do Mundo</h3>
                 <div id="phasesContainer">
                     <!-- Fases serão adicionadas aqui -->
@@ -683,7 +675,6 @@
                     description: 'Desenvolva habilidades de liderança e gestão de equipes',
                     icon: '👔',
                     color: '#4FC3DC',
-                    password: 'Lider2026!',
                     enabled: true,
                     phases: [
                         {
@@ -715,7 +706,6 @@
                     description: 'Gestão de segurança operacional e processos industriais',
                     icon: '🛡️',
                     color: '#f39c12',
-                    password: 'Seguranca2026!',
                     enabled: true,
                     phases: [
                         {
@@ -787,10 +777,6 @@
                         <div class="stat"><strong>${world.phases.length}</strong> fases</div>
                         <div class="stat"><strong>${world.phases.filter(p => p.enabled).length}</strong> ativas</div>
                     </div>
-                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 15px 0; border-left: 3px solid var(--primary);">
-                        <div style="font-size: 11px; color: #6c757d; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">🔒 Senha de Acesso</div>
-                        <div style="font-family: monospace; font-size: 16px; font-weight: 700; color: var(--primary);">${world.password}</div>
-                    </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="shareWorld('${world.id}')">🔗 Link</button>
                         <button class="btn btn-secondary" onclick="editWorld('${world.id}')">✏️ Editar</button>
@@ -834,15 +820,9 @@
             const description = document.getElementById('worldDescription').value;
             const icon = document.getElementById('worldIcon').value;
             const color = document.getElementById('worldColor').value;
-            const password = document.getElementById('worldPassword').value;
             
             if (!name) {
                 alert('Por favor, preencha o nome do mundo!');
-                return;
-            }
-            
-            if (!password) {
-                alert('Por favor, defina uma senha para o mundo!');
                 return;
             }
             
@@ -866,7 +846,6 @@
                 description: description,
                 icon: icon || '🎯',
                 color: color,
-                password: password,
                 enabled: true,
                 phases: phases
             };
