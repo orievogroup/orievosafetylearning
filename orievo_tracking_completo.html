@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orievo Safety Learn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4FC3DC;
+            --secondary: #2A9BB8;
+            --dark: #1a1a1a;
+            --accent: #6DD5ED;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .logo-container img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        .logo-container h2 {
+            color: var(--primary);
+            margin-top: 10px;
+            font-size: 24px;
+        }
+
+        .mundos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .mundo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .mundo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .mundo-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .mundo-card h3 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .mundo-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .mundo-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mundo-card button:hover {
+            background: var(--secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .mundo-screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .mundo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .mundo-header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .mundo-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .progresso-container {
+            margin-bottom: 30px;
+        }
+
+        .progresso-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progresso-fill {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        .progresso-text {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .fases-list {
+            list-style: none;
+        }
+
+        .fase-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 5px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fase-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .fase-item.completa {
+            opacity: 0.7;
+            border-left-color: #28a745;
+        }
+
+        .fase-icon {
+            font-size: 28px;
+        }
+
+        .fase-info {
+            flex: 1;
+        }
+
+        .fase-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .fase-status {
+            font-size: 24px;
+        }
+
+        .fase-screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .fase-screen h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .artigo-content {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .artigo-content h2 {
+            color: var(--primary);
+            margin: 30px 0 15px 0;
+        }
+
+        .artigo-content h3 {
+            color: #333;
+            margin: 25px 0 10px 0;
+        }
+
+        .artigo-content p {
+            margin-bottom: 15px;
+        }
+
+        .artigo-content ul, .artigo-content ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        .artigo-content li {
+            margin-bottom: 8px;
+        }
+
+        .artigo-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .pergunta-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .pergunta-box h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .opcao {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .opcao:hover {
+            border-color: var(--primary);
+            background: #f0f8ff;
+        }
+
+        .opcao.selecionada {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: white;
+            border: 3px solid var(--primary);
+            color: #333;
+        }
+
+        .memory-card.matched {
+            background: #28a745;
+            cursor: default;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 22px;
+            color: var(--primary);
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-voltar {
+            background: #6c757d;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .btn-voltar:hover {
+            background: #5a6268;
+        }
+
+        .btn-concluir {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .btn-concluir:hover {
+            background: var(--secondary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://via.placeholder.com/400x150/4FC3DC/ffffff?text=ORIEVO+GROUP" alt="Orievo Logo">
+            <h2>Safety Learn - Plataforma de Treinamentos</h2>
+        </div>
+
+        <div id="telaSelecao">
+            <div class="mundos-grid" id="mundosGrid"></div>
+        </div>
+
+        <div id="telaMundo" class="hidden">
+            <div class="mundo-screen">
+                <button class="btn btn-voltar" onclick="voltarSelecao()">← Voltar aos Mundos</button>
+                
+                <div class="mundo-header">
+                    <h1 id="mundoTitulo"></h1>
+                    <p id="mundoDesc"></p>
+                </div>
+
+                <div class="progresso-container">
+                    <div class="progresso-bar">
+                        <div class="progresso-fill" id="progressoFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progresso-text" id="progressoText">0% concluído</div>
+                </div>
+
+                <ul class="fases-list" id="fasesList"></ul>
+            </div>
+        </div>
+
+        <div id="telaFase" class="hidden">
+            <div class="fase-screen">
+                <button class="btn btn-voltar" onclick="voltarMundo()">← Voltar</button>
+                <div id="faseConteudo"></div>
+            </div>
+        </div>
+
+        <div id="modalLogin" class="modal">
+            <div class="modal-content">
+                <h2 id="modalTitulo"></h2>
+                
+                <div class="form-group">
+                    <label>Senha de Acesso:</label>
+                    <input type="password" id="senhaInput" placeholder="Digite a senha">
+                </div>
+
+                <div class="form-group">
+                    <label>Seu Nome:</label>
+                    <input type="text" id="nomeInput" placeholder="Nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label>Seu Email:</label>
+                    <input type="email" id="emailInput" placeholder="seu@email.com">
+                </div>
+
+                <div class="error" id="loginError"></div>
+
+                <div class="modal-buttons">
+                    <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+                    <button class="btn-primary" onclick="validarLogin()">Entrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // TRACKING - NÃO MEXA AQUI!
+        // ============================================
+        const TRACKING_URL = 'https://script.google.com/macros/s/AKfycbxW8j9X8O_1q7ECg0w2ihAl8DDyafW5XxsbMnP5ypNc3i6NQBIkecKoCWHFFOwYDopX/exec';
+        
+        let dadosUsuario = {
+            nome: '',
+            email: ''
+        };
+
+        function enviarTracking(mundo, fase, nota) {
+            const dados = {
+                nome: dadosUsuario.nome,
+                email: dadosUsuario.email,
+                mundo: mundo,
+                fase: fase,
+                nota: nota || 'Concluído'
+            };
+
+            // Criar form data
+            const formData = new FormData();
+            formData.append('dados', JSON.stringify(dados));
+
+            // Enviar via fetch
+            fetch(TRACKING_URL, {
+                method: 'POST',
+                body: JSON.stringify(dados)
+            }).then(() => {
+                console.log('✅ Tracking enviado:', dados);
+            }).catch(error => {
+                console.log('⚠️ Erro tracking:', error);
+            });
+        }
+
+        // ============================================
+        // CONFIGURAÇÃO DOS MUNDOS
+        // EDITE AQUI PARA PERSONALIZAR!
+        // ============================================
+
+        const MUNDOS = {
+            'seguranca': {
+                nome: 'Segurança no Trabalho',
+                descricao: 'EPIs e Prevenção de Acidentes',
+                icone: '🛡️',
+                cor: '#e74c3c',
+                senha: 'Seguranca2026',
+                ativo: true,
+                logo: 'https://via.placeholder.com/300x100/e74c3c/ffffff?text=SEGURANCA',
+                
+                fases: [
+                    {
+                        nome: 'Vídeo: Introdução à Segurança',
+                        tipo: 'video',
+                        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+                    },
+                    {
+                        nome: 'Artigo: Normas de Segurança',
+                        tipo: 'artigo',
+                        conteudo: `
+                            <h2>Normas de Segurança no Trabalho</h2>
+                            
+                            <p>A segurança no trabalho é um conjunto de medidas que são adotadas visando minimizar os acidentes de trabalho, doenças ocupacionais, bem como proteger a integridade e a capacidade de trabalho do colaborador.</p>
+                            
+                            <h3>1. Equipamentos de Proteção Individual (EPIs)</h3>
+                            <p>Os EPIs são dispositivos de uso individual destinados a proteger a saúde e a integridade física do trabalhador.</p>
+                            
+                            <ul>
+                                <li><strong>Capacete:</strong> Proteção contra impactos, perfurações e choques elétricos</li>
+                                <li><strong>Luvas:</strong> Proteção das mãos contra agentes químicos, biológicos e mecânicos</li>
+                                <li><strong>Óculos:</strong> Proteção dos olhos contra partículas e respingos</li>
+                                <li><strong>Botas:</strong> Proteção dos pés contra perfurações e impactos</li>
+                            </ul>
+                            
+                            <h3>2. Responsabilidades do Trabalhador</h3>
+                            <ol>
+                                <li>Usar os EPIs fornecidos pela empresa</li>
+                                <li>Comunicar ao supervisor qualquer equipamento danificado</li>
+                                <li>Seguir rigorosamente as normas de segurança</li>
+                                <li>Participar dos treinamentos oferecidos</li>
+                            </ol>
+                            
+                            <p><strong>⚠️ Lembre-se:</strong> O não uso de EPIs pode resultar em acidentes graves e até fatais.</p>
+                        `
+                    },
+                    {
+                        nome: 'Quiz: Avaliação de Segurança',
+                        tipo: 'quiz',
+                        perguntas: [
+                            {
+                                pergunta: 'O que significa EPI?',
+                                opcoes: [
+                                    'Equipamento de Proteção Individual',
+                                    'Equipamento de Produção Industrial',
+                                    'Equipamento Pessoal Interno',
+                                    'Equipamento de Processo'
+                                ],
+                                correta: 0,
+                                explicacao: 'EPI significa Equipamento de Proteção Individual. São dispositivos de uso pessoal destinados a proteger a saúde e integridade física do trabalhador, como capacetes, luvas, óculos e protetores auriculares.'
+                            },
+                            {
+                                pergunta: 'Quando devemos usar capacete?',
+                                opcoes: [
+                                    'Quando o supervisor está presente',
+                                    'Em áreas sinalizadas como obrigatório',
+                                    'Somente em dias de chuva',
+                                    'Apenas em obras'
+                                ],
+                                correta: 1,
+                                explicacao: 'O capacete deve ser usado em todas as áreas onde houver sinalização indicando sua obrigatoriedade, independente da presença do supervisor ou condições climáticas. A sinalização existe para proteger contra riscos reais de impactos na cabeça.'
+                            },
+                            {
+                                pergunta: 'Qual a principal função do DDS?',
+                                opcoes: [
+                                    'Reduzir custos da empresa',
+                                    'Substituir treinamentos formais',
+                                    'Conscientização diária sobre segurança',
+                                    'Apenas burocracia legal'
+                                ],
+                                correta: 2,
+                                explicacao: 'O DDS (Diálogo Diário de Segurança) tem como principal função conscientizar diariamente a equipe sobre riscos específicos das atividades do dia, reforçar boas práticas e manter a segurança sempre em pauta. Não substitui treinamentos formais, mas complementa a cultura de segurança.'
+                            },
+                            {
+                                pergunta: 'EPI danificado, o que fazer?',
+                                opcoes: [
+                                    'Continuar usando',
+                                    'Reportar e solicitar substituição',
+                                    'Tentar consertar',
+                                    'Emprestar de um colega'
+                                ],
+                                correta: 1,
+                                explicacao: 'Ao identificar um EPI danificado, o trabalhador deve imediatamente reportar ao supervisor e solicitar a substituição. Usar EPI danificado compromete a proteção e pode causar acidentes graves. Nunca tente consertar ou emprestar de colegas, pois cada EPI é individual e deve estar em perfeitas condições.'
+                            }
+                        ]
+                    },
+                    {
+                        nome: 'Jogo: Memória dos EPIs',
+                        tipo: 'memoria',
+                        simbolos: ['⛑️', '🥽', '🦺', '👷', '🧤', '👟', '😷', '🎧']
+                    }
+                ]
+            },
+
+            'lideranca': {
+                nome: 'Líder de Excelência',
+                descricao: 'Desenvolvimento de Habilidades de Liderança',
+                icone: '👔',
+                cor: '#3498db',
+                senha: 'Lider2026',
+                ativo: true,
+                logo: 'https://via.placeholder.com/300x100/3498db/ffffff?text=LIDERANCA',
+                
+                fases: [
+                    {
+                        nome: 'Vídeo: O que é Liderança',
+                        tipo: 'video',
+                        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+                    },
+                    {
+                        nome: 'Quiz: Fundamentos de Liderança',
+                        tipo: 'quiz',
+                        perguntas: [
+                            {
+                                pergunta: 'Qual característica essencial em um líder?',
+                                opcoes: ['Autoritarismo', 'Empatia e comunicação', 'Rigidez', 'Distanciamento'],
+                                correta: 1,
+                                explicacao: 'Empatia e comunicação são essenciais porque um líder precisa entender as necessidades da equipe, ouvir ativamente e transmitir informações de forma clara. O autoritarismo e a rigidez criam distanciamento e desmotivam a equipe.'
+                            },
+                            {
+                                pergunta: 'Liderar pelo exemplo significa?',
+                                opcoes: ['Delegar tudo', 'Demonstrar comportamentos esperados', 'Só dar ordens', 'Evitar envolvimento'],
+                                correta: 1,
+                                explicacao: 'Liderar pelo exemplo significa que o líder deve demonstrar na prática os comportamentos, valores e atitudes que espera de sua equipe. As pessoas tendem a seguir ações, não apenas palavras.'
+                            },
+                            {
+                                pergunta: 'Qual o papel do feedback?',
+                                opcoes: ['Criticar erros', 'Evitar confrontos', 'Desenvolver e orientar equipe', 'Punir comportamentos'],
+                                correta: 2,
+                                explicacao: 'O feedback tem papel fundamental no desenvolvimento da equipe. Deve ser construtivo, específico e orientado para o crescimento profissional, não para punição. Um bom feedback ajuda a pessoa a melhorar e crescer.'
+                            },
+                            {
+                                pergunta: 'Como lidar com conflitos?',
+                                opcoes: ['Ignorar', 'Tomar partido', 'Mediar e buscar soluções', 'Transferir responsabilidade'],
+                                correta: 2,
+                                explicacao: 'O líder deve atuar como mediador em conflitos, ouvindo todas as partes envolvidas e buscando soluções que beneficiem o time como um todo. Ignorar conflitos ou tomar partido apenas agrava a situação.'
+                            }
+                        ]
+                    },
+                    {
+                        nome: 'Jogo: Memória de Competências',
+                        tipo: 'memoria',
+                        simbolos: ['👔', '💼', '📊', '🎯', '💡', '🤝', '📈', '⭐']
+                    }
+                ]
+            }
+        };
+
+        // ============================================
+        // SISTEMA
+        // ============================================
+
+        let mundoSelecionado = null;
+        let faseAtual = null;
+        let progresso = {};
+        let respostasQuiz = [];
+        let memoriaCards = [];
+        let memoriaFlipped = [];
+
+        window.onload = function() {
+            const grid = document.getElementById('mundosGrid');
+            
+            for (let id in MUNDOS) {
+                if (MUNDOS[id].ativo !== false) {
+                    const mundo = MUNDOS[id];
+                    const card = document.createElement('div');
+                    card.className = 'mundo-card';
+                    card.style.borderColor = mundo.cor;
+                    
+                    card.innerHTML = `
+                        <div class="mundo-icon">${mundo.icone}</div>
+                        <h3>${mundo.nome}</h3>
+                        <p>${mundo.descricao}</p>
+                        <button onclick="abrirModalLogin('${id}')">Acessar Treinamento</button>
+                    `;
+                    
+                    grid.appendChild(card);
+                }
+            }
+        };
+
+        function abrirModalLogin(mundoId) {
+            mundoSelecionado = mundoId;
+            document.getElementById('modalTitulo').textContent = MUNDOS[mundoId].nome;
+            document.getElementById('modalLogin').classList.add('active');
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalLogin').classList.remove('active');
+            document.getElementById('senhaInput').value = '';
+            document.getElementById('nomeInput').value = '';
+            document.getElementById('emailInput').value = '';
+        }
+
+        function validarLogin() {
+            const senha = document.getElementById('senhaInput').value;
+            const nome = document.getElementById('nomeInput').value;
+            const email = document.getElementById('emailInput').value;
+            const erro = document.getElementById('loginError');
+
+            if (senha !== MUNDOS[mundoSelecionado].senha) {
+                erro.textContent = 'Senha incorreta!';
+                erro.style.display = 'block';
+                return;
+            }
+
+            if (!nome || !email) {
+                erro.textContent = 'Preencha nome e email';
+                erro.style.display = 'block';
+                return;
+            }
+
+            dadosUsuario.nome = nome;
+            dadosUsuario.email = email;
+            progresso[mundoSelecionado] = progresso[mundoSelecionado] || [];
+            
+            fecharModal();
+            abrirMundo();
+        }
+
+        function abrirMundo() {
+            const mundo = MUNDOS[mundoSelecionado];
+            
+            document.getElementById('telaSelecao').classList.add('hidden');
+            document.getElementById('telaMundo').classList.remove('hidden');
+            
+            // Adicionar logo do mundo se existir
+            let logoHtml = '';
+            if (mundo.logo) {
+                logoHtml = `
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <img src="${mundo.logo}" alt="${mundo.nome}" style="max-width: 250px; height: auto; border-radius: 10px;">
+                    </div>
+                `;
+            }
+            
+            document.getElementById('mundoTitulo').textContent = mundo.nome;
+            document.getElementById('mundoDesc').textContent = mundo.descricao;
+            
+            // Inserir logo antes do título
+            const mundoHeader = document.querySelector('.mundo-header');
+            const tituloElement = document.getElementById('mundoTitulo');
+            
+            // Remove logo anterior se existir
+            const logoAnterior = mundoHeader.querySelector('.mundo-logo');
+            if (logoAnterior) {
+                logoAnterior.remove();
+            }
+            
+            // Adiciona nova logo se existir
+            if (mundo.logo) {
+                const logoDiv = document.createElement('div');
+                logoDiv.className = 'mundo-logo';
+                logoDiv.innerHTML = `<img src="${mundo.logo}" alt="${mundo.nome}" style="max-width: 250px; height: auto; border-radius: 10px; margin-bottom: 20px;">`;
+                mundoHeader.insertBefore(logoDiv, tituloElement);
+            }
+            
+            const fasesList = document.getElementById('fasesList');
+            fasesList.innerHTML = '';
+            
+            mundo.fases.forEach((fase, index) => {
+                const li = document.createElement('li');
+                li.className = 'fase-item';
+                
+                if (progresso[mundoSelecionado].includes(index)) {
+                    li.classList.add('completa');
+                }
+                
+                const icones = {
+                    'video': '📹',
+                    'artigo': '📄',
+                    'quiz': '❓',
+                    'memoria': '🎮'
+                };
+                
+                li.innerHTML = `
+                    <div class="fase-icon">${icones[fase.tipo]}</div>
+                    <div class="fase-info">
+                        <h4>${fase.nome}</h4>
+                    </div>
+                    <div class="fase-status">${progresso[mundoSelecionado].includes(index) ? '✓' : ''}</div>
+                `;
+                
+                li.onclick = () => abrirFase(index);
+                fasesList.appendChild(li);
+            });
+            
+            atualizarProgresso();
+        }
+
+        function atualizarProgresso() {
+            const total = MUNDOS[mundoSelecionado].fases.length;
+            const completas = progresso[mundoSelecionado].length;
+            const percentual = (completas / total) * 100;
+            
+            document.getElementById('progressoFill').style.width = percentual + '%';
+            document.getElementById('progressoText').textContent = Math.round(percentual) + '% concluído';
+        }
+
+        function abrirFase(index) {
+            faseAtual = index;
+            const fase = MUNDOS[mundoSelecionado].fases[index];
+            
+            document.getElementById('telaMundo').classList.add('hidden');
+            document.getElementById('telaFase').classList.remove('hidden');
+            
+            const conteudo = document.getElementById('faseConteudo');
+            
+            if (fase.tipo === 'video') {
+                carregarVideo(fase, conteudo);
+            } else if (fase.tipo === 'artigo') {
+                carregarArtigo(fase, conteudo);
+            } else if (fase.tipo === 'quiz') {
+                carregarQuiz(fase, conteudo);
+            } else if (fase.tipo === 'memoria') {
+                carregarMemoria(fase, conteudo);
+            }
+        }
+
+        function carregarVideo(fase, conteudo) {
+            conteudo.innerHTML = `
+                <h2>${fase.nome}</h2>
+                <div class="video-container">
+                    <iframe src="${fase.url}" allowfullscreen></iframe>
+                </div>
+                <button class="btn btn-concluir" onclick="concluirFase()">Concluir e Voltar</button>
+            `;
+        }
+
+        function carregarArtigo(fase, conteudo) {
+            conteudo.innerHTML = `
+                <h2>${fase.nome}</h2>
+                <div class="artigo-content">${fase.conteudo}</div>
+                <button class="btn btn-concluir" onclick="concluirFase()">Concluir Leitura</button>
+            `;
+        }
+
+        let perguntaAtualQuiz = 0;
+        let acertosQuiz = 0;
+
+        function carregarQuiz(fase, conteudo) {
+            respostasQuiz = new Array(fase.perguntas.length).fill(null);
+            perguntaAtualQuiz = 0;
+            acertosQuiz = 0;
+            mostrarPerguntaQuiz(fase, conteudo);
+        }
+
+        function mostrarPerguntaQuiz(fase, conteudo) {
+            const p = fase.perguntas[perguntaAtualQuiz];
+            
+            let html = `
+                <h2>${fase.nome}</h2>
+                <div style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Pergunta ${perguntaAtualQuiz + 1} de ${fase.perguntas.length}
+                </div>
+                
+                <div class="pergunta-box">
+                    <h3>${p.pergunta}</h3>`;
+            
+            p.opcoes.forEach((opcao, j) => {
+                html += `<div class="opcao" onclick="responderPergunta(${j})">
+                    <span>${opcao}</span>
+                </div>`;
+            });
+            
+            html += '</div>';
+            conteudo.innerHTML = html;
+        }
+
+        function responderPergunta(opcaoSelecionada) {
+            const fase = MUNDOS[mundoSelecionado].fases[faseAtual];
+            const p = fase.perguntas[perguntaAtualQuiz];
+            const acertou = opcaoSelecionada === p.correta;
+            
+            if (acertou) {
+                acertosQuiz++;
+            }
+            
+            respostasQuiz[perguntaAtualQuiz] = opcaoSelecionada;
+            
+            mostrarExplicacao(acertou, p);
+        }
+
+        function mostrarExplicacao(acertou, pergunta) {
+            const conteudo = document.getElementById('faseConteudo');
+            const fase = MUNDOS[mundoSelecionado].fases[faseAtual];
+            
+            const corEmoji = acertou ? '✅' : '❌';
+            const corTexto = acertou ? '#28a745' : '#dc3545';
+            const titulo = acertou ? 'Resposta Correta!' : 'Resposta Incorreta';
+            
+            let html = `
+                <h2>${fase.nome}</h2>
+                <div style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Pergunta ${perguntaAtualQuiz + 1} de ${fase.perguntas.length}
+                </div>
+                
+                <div style="text-align: center; font-size: 80px; margin: 30px 0;">
+                    ${corEmoji}
+                </div>
+                
+                <div style="background: white; padding: 30px; border-radius: 15px; border-left: 5px solid ${corTexto};">
+                    <h3 style="color: ${corTexto}; margin-bottom: 20px;">${titulo}</h3>
+                    
+                    <p style="margin-bottom: 15px;"><strong>Pergunta:</strong> ${pergunta.pergunta}</p>
+                    
+                    <p style="margin-bottom: 15px;"><strong>Resposta correta:</strong> ${pergunta.opcoes[pergunta.correta]}</p>`;
+            
+            if (pergunta.explicacao) {
+                html += `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <p style="margin: 0;"><strong>💡 Explicação:</strong></p>
+                        <p style="margin: 10px 0 0 0;">${pergunta.explicacao}</p>
+                    </div>`;
+            }
+            
+            html += `</div>`;
+            
+            if (perguntaAtualQuiz < fase.perguntas.length - 1) {
+                html += '<button class="btn btn-concluir" onclick="proximaPergunta()">Próxima Pergunta →</button>';
+            } else {
+                html += '<button class="btn btn-concluir" onclick="finalizarQuizComExplicacao()">Ver Resultado Final</button>';
+            }
+            
+            conteudo.innerHTML = html;
+        }
+
+        function proximaPergunta() {
+            const fase = MUNDOS[mundoSelecionado].fases[faseAtual];
+            const conteudo = document.getElementById('faseConteudo');
+            
+            perguntaAtualQuiz++;
+            mostrarPerguntaQuiz(fase, conteudo);
+        }
+
+        function finalizarQuizComExplicacao() {
+            const fase = MUNDOS[mundoSelecionado].fases[faseAtual];
+            const percentual = (acertosQuiz / fase.perguntas.length) * 100;
+            const nota = percentual.toFixed(0) + '%';
+            
+            // ENVIA TRACKING DO QUIZ
+            enviarTracking(
+                MUNDOS[mundoSelecionado].nome,
+                fase.nome,
+                nota
+            );
+            
+            const conteudo = document.getElementById('faseConteudo');
+            
+            const passou = percentual >= 70;
+            const emoji = passou ? '🎉' : '📚';
+            const cor = passou ? '#28a745' : '#dc3545';
+            const titulo = passou ? 'Parabéns! Você foi aprovado!' : 'Você precisa estudar mais';
+            const mensagem = passou ? 
+                'Você demonstrou conhecimento suficiente sobre o tema!' : 
+                'Você precisa de pelo menos 70% para ser aprovado. Revise o conteúdo e tente novamente!';
+            
+            let html = `
+                <h2>${fase.nome}</h2>
+                
+                <div style="text-align: center; font-size: 100px; margin: 30px 0;">
+                    ${emoji}
+                </div>
+                
+                <div style="background: white; padding: 40px; border-radius: 15px; text-align: center; border: 3px solid ${cor};">
+                    <h3 style="color: ${cor}; font-size: 28px; margin-bottom: 20px;">${titulo}</h3>
+                    
+                    <div style="font-size: 48px; font-weight: bold; color: ${cor}; margin: 20px 0;">
+                        ${nota}
+                    </div>
+                    
+                    <p style="font-size: 18px; margin-bottom: 10px;">
+                        Você acertou <strong>${acertosQuiz}</strong> de <strong>${fase.perguntas.length}</strong> perguntas
+                    </p>
+                    
+                    <p style="color: #666; margin-top: 20px;">
+                        ${mensagem}
+                    </p>
+                </div>`;
+            
+            if (passou) {
+                html += '<button class="btn btn-concluir" onclick="concluirFase()">Concluir e Voltar</button>';
+            } else {
+                html += '<button class="btn btn-concluir" onclick="voltarMundo()">Tentar Novamente</button>';
+            }
+            
+            conteudo.innerHTML = html;
+        }
+
+        function selecionarOpcao(pergunta, opcao) {
+            // Função mantida para compatibilidade, mas não é mais usada
+        }
+
+        function finalizarQuiz() {
+            // Função mantida para compatibilidade, mas não é mais usada
+        }
+
+        function carregarMemoria(fase, conteudo) {
+            const simbolos = [...fase.simbolos, ...fase.simbolos];
+            simbolos.sort(() => Math.random() - 0.5);
+            
+            memoriaCards = simbolos.map((simbolo, i) => ({
+                id: i,
+                simbolo,
+                flipped: false,
+                matched: false
+            }));
+            memoriaFlipped = [];
+            
+            let html = `<h2>${fase.nome}</h2>`;
+            html += '<div class="score">Pares encontrados: <span id="pares">0</span>/8</div>';
+            html += '<div class="memory-grid">';
+            
+            memoriaCards.forEach((card, i) => {
+                html += `<div class="memory-card" id="card-${i}" onclick="flipCard(${i})">?</div>`;
+            });
+            
+            html += '</div>';
+            conteudo.innerHTML = html;
+        }
+
+        function flipCard(index) {
+            if (memoriaFlipped.length === 2) return;
+            if (memoriaCards[index].matched) return;
+            if (memoriaFlipped.includes(index)) return;
+            
+            const card = document.getElementById(`card-${index}`);
+            card.textContent = memoriaCards[index].simbolo;
+            card.classList.add('flipped');
+            memoriaFlipped.push(index);
+            
+            if (memoriaFlipped.length === 2) {
+                setTimeout(checkMatch, 800);
+            }
+        }
+
+        function checkMatch() {
+            const [i1, i2] = memoriaFlipped;
+            const card1 = memoriaCards[i1];
+            const card2 = memoriaCards[i2];
+            
+            if (card1.simbolo === card2.simbolo) {
+                card1.matched = true;
+                card2.matched = true;
+                document.getElementById(`card-${i1}`).classList.add('matched');
+                document.getElementById(`card-${i2}`).classList.add('matched');
+                
+                const pares = memoriaCards.filter(c => c.matched).length / 2;
+                document.getElementById('pares').textContent = pares;
+                
+                if (pares === 8) {
+                    setTimeout(() => {
+                        alert('Parabéns! Você completou o jogo!');
+                        concluirFase();
+                    }, 500);
+                }
+            } else {
+                document.getElementById(`card-${i1}`).textContent = '?';
+                document.getElementById(`card-${i2}`).textContent = '?';
+                document.getElementById(`card-${i1}`).classList.remove('flipped');
+                document.getElementById(`card-${i2}`).classList.remove('flipped');
+            }
+            
+            memoriaFlipped = [];
+        }
+
+        function concluirFase() {
+            if (!progresso[mundoSelecionado].includes(faseAtual)) {
+                progresso[mundoSelecionado].push(faseAtual);
+                
+                // ENVIA TRACKING DA FASE
+                const fase = MUNDOS[mundoSelecionado].fases[faseAtual];
+                if (fase.tipo !== 'quiz') { // Quiz já envia tracking próprio
+                    enviarTracking(
+                        MUNDOS[mundoSelecionado].nome,
+                        fase.nome,
+                        'Concluído'
+                    );
+                }
+            }
+            voltarMundo();
+        }
+
+        function voltarMundo() {
+            document.getElementById('telaFase').classList.add('hidden');
+            document.getElementById('telaMundo').classList.remove('hidden');
+            abrirMundo();
+        }
+
+        function voltarSelecao() {
+            document.getElementById('telaMundo').classList.add('hidden');
+            document.getElementById('telaSelecao').classList.remove('hidden');
+            mundoSelecionado = null;
+        }
+    </script>
+</body>
+</html>
