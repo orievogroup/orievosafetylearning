@@ -722,6 +722,32 @@
                         nome: 'Jogo: Memória dos EPIs',
                         tipo: 'memoria',
                         simbolos: ['⛑️', '🥽', '🦺', '👷', '🧤', '👟', '😷', '🎧']
+                    },
+                    {
+                        nome: 'Jogo: Associar Termos de Segurança',
+                        tipo: 'associar',
+                        pares: [
+                            {
+                                termo: 'EPI',
+                                definicao: 'Equipamento de Proteção Individual'
+                            },
+                            {
+                                termo: 'DDS',
+                                definicao: 'Diálogo Diário de Segurança'
+                            },
+                            {
+                                termo: 'CIPA',
+                                definicao: 'Comissão Interna de Prevenção de Acidentes'
+                            },
+                            {
+                                termo: 'NR-6',
+                                definicao: 'Norma Regulamentadora sobre EPIs'
+                            },
+                            {
+                                termo: 'SESMT',
+                                definicao: 'Serviço Especializado em Engenharia de Segurança'
+                            }
+                        ]
                     }
                 ]
             },
@@ -905,7 +931,8 @@
                     'video': '📹',
                     'artigo': '📄',
                     'quiz': '❓',
-                    'memoria': '🎮'
+                    'memoria': '🎮',
+                    'associar': '🔗'
                 };
                 
                 li.innerHTML = `
@@ -949,6 +976,8 @@
                 carregarQuiz(fase, conteudo);
             } else if (fase.tipo === 'memoria') {
                 carregarMemoria(fase, conteudo);
+            } else if (fase.tipo === 'associar') {
+                carregarAssociar(fase, conteudo);
             }
         }
 
@@ -1197,6 +1226,138 @@
             }
             
             memoriaFlipped = [];
+        }
+
+        // ============================================
+        // JOGO ASSOCIAR PARES
+        // ============================================
+        
+        let associarPares = [];
+        let associarSelecionado = null;
+        let associarAcertos = 0;
+        
+        function carregarAssociar(fase, conteudo) {
+            // Embaralha definições
+            const definicoes = [...fase.pares.map((p, i) => ({texto: p.definicao, index: i}))];
+            definicoes.sort(() => Math.random() - 0.5);
+            
+            associarPares = fase.pares.map((p, i) => ({...p, conectado: false, index: i}));
+            associarSelecionado = null;
+            associarAcertos = 0;
+            
+            let html = `<h2>${fase.nome}</h2>`;
+            html += `<div class="score">Pares conectados: <span id="paresAssociados">0</span>/${fase.pares.length}</div>`;
+            html += `<p style="text-align: center; color: #666; margin: 20px 0;">Clique em um termo à esquerda, depois em sua definição à direita</p>`;
+            
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0;">';
+            
+            // Coluna esquerda - Termos
+            html += '<div style="display: flex; flex-direction: column; gap: 15px;">';
+            fase.pares.forEach((par, i) => {
+                html += `
+                    <div id="termo-${i}" class="associar-termo" onclick="selecionarTermo(${i})" 
+                         style="background: #3498db; color: white; padding: 20px; border-radius: 10px; 
+                                cursor: pointer; text-align: center; font-weight: 600; transition: all 0.3s;
+                                border: 3px solid transparent;">
+                        ${par.termo}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            // Coluna direita - Definições (embaralhadas)
+            html += '<div style="display: flex; flex-direction: column; gap: 15px;">';
+            definicoes.forEach((def, i) => {
+                html += `
+                    <div id="def-${def.index}" class="associar-def" onclick="selecionarDefinicao(${def.index})"
+                         style="background: #e0e0e0; color: #333; padding: 20px; border-radius: 10px; 
+                                cursor: pointer; text-align: center; transition: all 0.3s;
+                                border: 3px solid transparent;">
+                        ${def.texto}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            html += '</div>';
+            
+            conteudo.innerHTML = html;
+        }
+        
+        function selecionarTermo(index) {
+            if (associarPares[index].conectado) return;
+            
+            // Remove seleção anterior
+            document.querySelectorAll('.associar-termo').forEach(el => {
+                if (!associarPares[parseInt(el.id.split('-')[1])].conectado) {
+                    el.style.background = '#3498db';
+                    el.style.borderColor = 'transparent';
+                    el.style.transform = 'scale(1)';
+                }
+            });
+            
+            // Seleciona novo
+            const termo = document.getElementById(`termo-${index}`);
+            termo.style.background = '#2ecc71';
+            termo.style.borderColor = '#27ae60';
+            termo.style.transform = 'scale(1.05)';
+            
+            associarSelecionado = index;
+        }
+        
+        function selecionarDefinicao(index) {
+            if (associarSelecionado === null) {
+                alert('Selecione um termo à esquerda primeiro!');
+                return;
+            }
+            
+            if (associarPares[index].conectado) return;
+            
+            const termo = document.getElementById(`termo-${associarSelecionado}`);
+            const def = document.getElementById(`def-${index}`);
+            
+            // Verifica se está correto
+            if (associarSelecionado === index) {
+                // CORRETO!
+                termo.style.background = '#27ae60';
+                termo.style.borderColor = '#229954';
+                termo.style.cursor = 'default';
+                termo.style.transform = 'scale(1)';
+                
+                def.style.background = '#27ae60';
+                def.style.borderColor = '#229954';
+                def.style.color = 'white';
+                def.style.cursor = 'default';
+                
+                associarPares[index].conectado = true;
+                associarAcertos++;
+                
+                document.getElementById('paresAssociados').textContent = associarAcertos;
+                
+                associarSelecionado = null;
+                
+                // Verifica se completou
+                if (associarAcertos === associarPares.length) {
+                    setTimeout(() => {
+                        alert('Parabéns! Você conectou todos os pares corretamente!');
+                        concluirFase();
+                    }, 500);
+                }
+            } else {
+                // ERRADO!
+                termo.style.background = '#e74c3c';
+                def.style.background = '#e74c3c';
+                def.style.color = 'white';
+                
+                setTimeout(() => {
+                    termo.style.background = '#3498db';
+                    termo.style.borderColor = 'transparent';
+                    termo.style.transform = 'scale(1)';
+                    def.style.background = '#e0e0e0';
+                    def.style.color = '#333';
+                    associarSelecionado = null;
+                }, 800);
+            }
         }
 
         function concluirFase() {
